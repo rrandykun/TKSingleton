@@ -113,4 +113,43 @@ public class BookDaoImplementation
         ps.setString(3, book_code);
         ps.executeUpdate();
     }
+
+    @Override
+    public void rentBook(String book_code, String user_id)
+            throws SQLException
+    {
+        String query
+                = "INSERT INTO `tbl_pinjam`(`book_code`, `user_id` ) VALUES (?,?)";
+        PreparedStatement ps
+                = con.prepareStatement(query);
+        ps.setString(1, book_code);
+        ps.setString(2, user_id);
+        ps.executeUpdate();
+
+        String query1
+                = "update book_data set status='rent' where book_code = ?";
+        PreparedStatement ps1
+                = con.prepareStatement(query1);
+        ps1.setString(1, book_code);
+        ps1.executeUpdate();
+    }
+
+    @Override
+    public void returnBook(String book_code, String id_pinjam)
+            throws SQLException
+    {
+        String query
+                = "INSERT INTO `tbl_kembali`(`id_pinjam`) VALUES (?)";
+        PreparedStatement ps
+                = con.prepareStatement(query);
+        ps.setString(1, id_pinjam);
+        ps.executeUpdate();
+
+        String query1
+                = "Update book_data set status='available' where book_code=? ";
+        PreparedStatement ps1
+                = con.prepareStatement(query1);
+        ps1.setString(1, book_code);
+        ps1.executeUpdate();
+    }
 }

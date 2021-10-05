@@ -14,4 +14,9 @@ public interface BookDao {
         throws SQLException;
     public void update(String book_name, String book_code, String status)
         throws SQLException;
+
+    public void rentBook(String book_code, String user_id)
+            throws SQLException;
+    public void returnBook(String book_code, String user_name)
+            throws SQLException;
 }
