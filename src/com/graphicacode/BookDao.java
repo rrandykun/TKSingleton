@@ -12,6 +12,6 @@ public interface BookDao {
         throws SQLException;
     public List<Book> getBooks()
         throws SQLException;
-    public void update(Book book)
+    public void update(String book_name, String book_code, String status)
         throws SQLException;
 }

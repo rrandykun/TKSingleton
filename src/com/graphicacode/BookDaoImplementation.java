@@ -100,17 +100,17 @@ public class BookDaoImplementation
     }
 
     @Override
-    public void update(Book book)
-        throws SQLException
+    public void update(String book_name, String book_code, String status)
+            throws SQLException
     {
 
         String query
-            = "update book_data set book_name=?, "+ " book_code= ? where id = ?";
+                = "update book_data set book_name=?, "+ " status= ? where book_code = ?";
         PreparedStatement ps
-            = con.prepareStatement(query);
-        ps.setString(1, book.getBook_name());
-        ps.setString(2, book.getBook_code());
-        ps.setInt(3, book.getBook_id());
+                = con.prepareStatement(query);
+        ps.setString(1, book_name);
+        ps.setString(2, status);
+        ps.setString(3, book_code);
         ps.executeUpdate();
     }
 }
