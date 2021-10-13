@@ -12,10 +12,15 @@ public class App {
     public static void main(String[] args) throws SQLException{
         BookDaoImplementation bookDao = new BookDaoImplementation();
         UserDaoImplementation userDao = new UserDaoImplementation();
+        TransaksiDaoImplementation transDao = new TransaksiDaoImplementation();
 
         Scanner input = new Scanner (System.in);
+        //System.out.print   ("Masukkan Nama Petugas: ");
+        //String namaPetugas = input.nextLine();
+
         int menu;
         do {
+           // System.out.println("Nama Petugas = " + namaPetugas);
             System.out.println();
             System.out.println ("         Menu          ");
             System.out.println ("-------------------------------");
@@ -37,7 +42,8 @@ public class App {
                     System.out.println   ("4. Lihat Buku");
                     System.out.print   ("Pilih menu     : ");
                     int menuBuku = input.nextInt();
-                    String judul, kode;
+                    String judul, penerbit;
+                    int tahun, kode;
                     List<Book> ls;
 
                     System.out.println ();
@@ -48,13 +54,17 @@ public class App {
                             System.out.println ("-------------------------------");
                             System.out.print   ("Masukkan Judul Buku: ");
                             judul = input.nextLine();
-                            System.out.print   ("Masukkan Kode Buku: ");
-                            kode = input.next();
+                            System.out.print   ("Masukkan Penerbit Buku: ");
+                            penerbit = input.nextLine();
+                            System.out.print   ("Masukkan Tahun Buku: ");
+                            tahun = input.nextInt();
+
 
                             //eksekusi add
                             Book book = new Book();
-                            book.setBook_name(judul);
-                            book.setBook_code(kode);
+                            book.setJudul(judul);
+                            book.setPenerbit(penerbit);
+                            book.setTahun(tahun);
                             book.setStatus("available");
                             bookDao.add(book);
                             break;
@@ -63,26 +73,45 @@ public class App {
                             for (Book allbook : ls) {
                                 System.out.println(allbook);
                             }
-                            System.out.println("== Ubah data buku == ");
-                            Scanner update = new Scanner(System.in);
-                            System.out.print("Masukkan kode buku: ");
-                            String bookcodeup= update.nextLine();
-                            System.out.print("Masukkan judul buku: ");
-                            String booknameup = update.nextLine();
-                            System.out.print("Masukkan status buku: ");
-                            String status = update.next();
 
-                            bookDao.update(booknameup,bookcodeup, status);
+                            if(ls.size()>0){
+                                Scanner update = new Scanner(System.in);
+
+                                System.out.println("== Ubah data buku == ");
+                                System.out.print("Masukkan kode buku: ");
+                                int kdBuku = update.nextInt();
+
+                                Book bp = bookDao.getBook(kdBuku);
+
+                                if(bp != null){
+                                    update.nextLine();
+                                    System.out.print("Masukkan judul buku: ");
+                                    String booknameup = update.nextLine();
+                                    System.out.print("Masukkan penerbit buku: ");
+                                    String penerbitup = update.nextLine();
+                                    System.out.print("Masukkan tahun buku: ");
+                                    int tahunup = update.nextInt();
+                                    System.out.print("Masukkan status buku: ");
+                                    String status = update.next();
+
+                                    bookDao.update(kdBuku, booknameup, penerbitup, tahunup, status);
+                                }else{
+                                    System.out.println("Kode buku tidak ditemukan.");
+                                }
+                            }
                             break;
                         case 3:
                             ls = bookDao.getBooks();
                             for (Book allbook : ls) {
                                 System.out.println(allbook);
                             }
-                            System.out.print   ("Masukkan Kode Buku yang mau dihapus: ");
-                            kode = input.next();
+                            if(ls.size()>0){
+                                System.out.print   ("Masukkan Kode Buku yang mau dihapus: ");
+                                kode = input.nextInt();
 
-                            bookDao.delete(kode);
+                                bookDao.delete(kode);
+                            }
+
                             break;
                         case 4:
                             ls = bookDao.getBooks();
@@ -95,7 +124,7 @@ public class App {
                     break;
                 case 2:
                     User user = new User();
-
+                    String nama, notelp, email;
                     System.out.println ("         Menu Data User          ");
                     System.out.println ("-------------------------------");
                     System.out.println   ("1. Tambah User");
@@ -114,11 +143,15 @@ public class App {
                             System.out.println ("         Tambah Data Peminjam          ");
                             System.out.println ("-------------------------------");
                             System.out.print   ("Masukkan Nama Peminjam: ");
-                            String nama = input.next();
-
+                            nama = input.nextLine();
+                            System.out.print("Masukkan no telepon peminjam: ");
+                            notelp = input.nextLine();
+                            System.out.print("Masukkan email peminjam: ");
+                            email = input.nextLine();
                             //add
                             user.setNama_peminjam(nama);
-                            user.setStatus("Active");
+                            user.setNoTelp(notelp);
+                            user.setEmail(email);
                             userDao.add(user);
                             break;
                         case 2:
@@ -127,34 +160,55 @@ public class App {
                             for (User alluser : ls_user) {
                                 System.out.println(alluser);
                             }
-                            System.out.println("== Ubah data Peminjam == ");
-                            Scanner update = new Scanner(System.in);
-                            System.out.print("Masukkan id Peminjam: ");
-                            String id_user= update.nextLine();
-                            System.out.print("Masukkan nama peminjam: ");
-                            String nama_peminjam= update.nextLine();
-                            System.out.print("Masukkan status peminjam: ");
-                            String status = update.next();
 
-                            int user_id = Integer.parseInt(id_user);
+                            if(ls_user.size()>0){
+                                Scanner update = new Scanner(System.in);
 
-                            userDao.update(nama_peminjam, status,user_id);
+                                System.out.println("== Ubah data Peminjam == ");
+                                System.out.print("Masukkan id Peminjam: ");
+                                int id_user= update.nextInt();
 
+                                User us = userDao.getUser(id_user);
+
+                                if(us != null){
+                                    update.nextLine();
+                                    System.out.print("Masukkan nama peminjam: ");
+                                    nama = update.nextLine();
+                                    System.out.print("Masukkan no telepon peminjam: ");
+                                    notelp = update.nextLine();
+                                    System.out.print("Masukkan email peminjam: ");
+                                    email = update.nextLine();
+
+                                    userDao.update(id_user, nama, notelp, email);
+                                }else{
+                                    System.out.println("ID peminjam tidak ditemukan.");
+                                }
+                            }
                             break;
                         case 3:
                             //delete
-                            System.out.print   ("Masukkan Id User: ");
-                            int id = input.nextInt();
-                            System.out.println ();
+                            ls_user = userDao.getUsers();
+                            for (User allUser : ls_user) {
+                                System.out.printf("ID : %s | Nama Peminjam : %s | No Telp : %s | Email : %s",allUser.getUser_id(),allUser.getNama_peminjam(), allUser.getNoTelp(), allUser.getEmail());
+                                System.out.println();
+                            }
 
-                            userDao.delete(id);
+                            if(ls_user.size()>0){
+                                System.out.print   ("Masukkan Id User: ");
+                                int id = input.nextInt();
+                                System.out.println ();
+
+                                userDao.delete(id);
+                            }
+
+
 
                             break;
                         case 4:
                             //view
                             ls_user = userDao.getUsers();
                             for (User allUser : ls_user) {
-                                System.out.printf("ID : %s | Nama Peminjam : %s | Status : %s",allUser.getUser_id(),allUser.getNama_peminjam(), allUser.getStatus());
+                                System.out.printf("ID : %s | Nama Peminjam : %s | No Telp : %s | Email : %s",allUser.getUser_id(),allUser.getNama_peminjam(), allUser.getNoTelp(), allUser.getEmail());
                                 System.out.println();
                             }
 
@@ -170,20 +224,58 @@ public class App {
                     System.out.println ("----------------------------------");
                     Scanner rent = new Scanner(System.in);
                     System.out.print   ("Masukkan Kode Buku: ");
-                    String bookcodeup= rent.next();
-                    System.out.print("Masukkan ID peminjam: ");
-                    String userrent= rent.next();
-                    bookDao.rentBook(bookcodeup, userrent);
+                    int kdBuku = rent.nextInt();
+
+                    Book bp = bookDao.getBook(kdBuku);
+
+                    if(bp != null){
+                        if (bp.status.equals("rent")) {
+                            System.out.println("Buku sedang dipinjam.");
+                        }else{
+                            System.out.println("Judul buku: " + bp.judul + " \nStatus: " + bp.status);
+                            rent.nextLine();
+                            System.out.print("Masukkan ID peminjam: ");
+                            int userrent= rent.nextInt();
+                            User us = userDao.getUser(userrent);
+                            if(us != null){
+                                System.out.println("Nama peminjam : " + us.getNama_peminjam());
+                                rent.nextLine();
+                                System.out.print("Masukkan tanggal peminjaman [dd/mm/yyyy]: ");
+                                String tgl= rent.nextLine();
+
+                                transDao.rentBook(kdBuku, userrent, tgl);
+                            }else{
+                                System.out.println("ID peminjam tidak ditemukan.");
+                            }
+
+                        }
+                    }else{
+                        System.out.println("Kode buku tidak ditemukan.");
+                    }
                     break;
                 case 4:
                     System.out.println ("         Pengembalian Buku          ");
                     System.out.println ("------------------------------------");
                     Scanner returnBook = new Scanner(System.in);
-                    System.out.print("Masukkan Kode Buku: ");
-                    String bookcodereturn= returnBook.next();
-                    System.out.print("Masukkan Kode Peminjaman: ");
-                    String id_pinjam= returnBook.next();
-                    bookDao.returnBook(bookcodereturn, id_pinjam);
+                    System.out.print("Masukkan ID peminjam: ");
+                    int peminjam= returnBook.nextInt();
+                    List<Transaksi> ls_trans;
+
+                    ls_trans = transDao.getRents(peminjam);
+                    if (ls_trans != null){
+                        for (Transaksi allTrx : ls_trans) {
+                            System.out.printf("ID Transaksi: %s | Kode Buku : %s | Tanggal Pinjam : %s",allTrx.getId(), allTrx.getKdBuku(), allTrx.getTglPinjam());
+                            System.out.println();
+                        }
+                        System.out.println();
+                        System.out.print("Masukkan Kode Buku: ");
+                        int bookcodereturn = returnBook.nextInt();
+                        System.out.print("Masukkan tanggal pengembalian [dd/mm/yyyy]: ");
+                        String tglKembali = returnBook.next();
+                        transDao.returnBook(peminjam, bookcodereturn, tglKembali);
+                    }else{
+                        System.out.println("ID peminjam tidak ditemukan dalam transaksi.");
+                    }
                     break;
                 default:
 

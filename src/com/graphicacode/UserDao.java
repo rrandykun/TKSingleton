@@ -12,6 +12,6 @@ public interface UserDao {
         throws SQLException;
     public List<User> getUsers()
         throws SQLException;
-    public void update(String nama_peminjam, String status, int user_id)
+    public void update(int user_id, String nama_peminjam, String notelp, String email)
         throws SQLException;
 }

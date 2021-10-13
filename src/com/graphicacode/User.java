@@ -3,14 +3,16 @@ package com.graphicacode;
 public class User {
     int user_id;
     String nama_peminjam;
-    String status;
+    String notelp;
+    String email;
 
     public User() {
     }
 
-    public User(String nama, String status) {
+    public User(String nama, String notelp, String email) {
         this.nama_peminjam = nama;
-        this.status = status;
+        this.notelp = notelp;
+        this.email = email;
     }
 
     public int getUser_id() {
@@ -29,16 +31,24 @@ public class User {
         this.nama_peminjam = nama;
     }
 
-    public String getStatus() {
-        return status;
+    public String getNoTelp() {
+        return notelp;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setNoTelp(String notelp) {
+        this.notelp = notelp;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
     public String toString() {
-        return "User [user_id=" + user_id + ",nama_peminjam=" + nama_peminjam + ", status=" + status+ "]";
+        return "User [user_id=" + user_id + ",nama_peminjam=" + nama_peminjam + ", notelp=" + notelp+ ", email=" + email +"]";
     }
 }

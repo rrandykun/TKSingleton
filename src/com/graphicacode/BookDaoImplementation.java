@@ -26,48 +26,59 @@ public class BookDaoImplementation
         throws SQLException
     {
         String query
-            = "INSERT INTO `book_data`(`book_name`, `book_code`, `status`) VALUES (?,?,?)";
+            = "INSERT INTO `tbl_buku`(`judul`, `penerbit`, `tahun`, `status`) VALUES (?,?,?,?)";
         PreparedStatement ps
             = con.prepareStatement(query);
-        ps.setString(1, book.getBook_name());
-        ps.setString(2, book.getBook_code());
-        ps.setString(3, book.getStatus());
+        ps.setString(1, book.getJudul());
+        ps.setString(2, book.getPenerbit());
+        ps.setInt(3, book.getTahun());
+        ps.setString(4, book.getStatus());
         int n = ps.executeUpdate();
+        if (n > 0) {
+            System.out.println("Data buku berhasil ditambahkan.");
+         }
         return n;
     }
 
     @Override
-    public void delete(String book_code)
+    public void delete(int book_code)
         throws SQLException
     {
         String query
-            = "delete from book_data where book_code =?";
+            = "delete from tbl_buku where kdBuku =?";
         PreparedStatement ps
             = con.prepareStatement(query);
-        ps.setString(1, book_code);
-        ps.executeUpdate();
+        ps.setInt(1, book_code);
+        int n = ps.executeUpdate();
+        if (n > 0) {
+            System.out.println("Data buku berhasil dihapus.");
+        }else{
+            System.out.println("Kode buku tidak ditemukan.");
+        }
     }
 
     @Override
-    public Book getBook(String book_code)
+    public Book getBook(int book_code)
         throws SQLException
     {
 
         String query
-            = "select * from book_data where book_code= ?";
+            = "select * from tbl_buku where kdBuku= ?";
         PreparedStatement ps
             = con.prepareStatement(query);
 
-        ps.setString(1, book_code);
+        ps.setInt(1, book_code);
         Book book = new Book();
         ResultSet rs = ps.executeQuery();
         boolean check = false;
 
         while (rs.next()) {
             check = true;
-            book.setBook_id(rs.getInt("id"));
-            book.setBook_name(rs.getString("book_name"));
-            book.setBook_code(rs.getString("book_code"));
+            book.setkdBuku(rs.getInt("kdBuku"));
+            book.setJudul(rs.getString("judul"));
+            book.setPenerbit(rs.getString("penerbit"));
+            book.setTahun(rs.getInt("tahun"));
+            book.setStatus(rs.getString("status"));
         }
 
         if (check == true) {
@@ -81,75 +92,103 @@ public class BookDaoImplementation
     public List<Book> getBooks()
         throws SQLException
     {
-        String query = "select * from book_data";
+        String query = "select * from tbl_buku";
         PreparedStatement ps
             = con.prepareStatement(query);
         ResultSet rs = ps.executeQuery();
         List<Book> ls = new ArrayList();
-
-        while (rs.next()) {
-            Book book = new Book();
-            book.setBook_id(rs.getInt("id"));
-            book.setBook_name(rs.getString("book_name"));
-            book.setBook_code(rs.getString("book_code"));
-            book.setDate_in(rs.getString("date_in"));
-            book.setStatus(rs.getString("status"));
-            ls.add(book);
+        if (rs.next() == false) {
+            System.out.println("Data Buku masih kosong.");
+        } else {
+            do {
+                Book book = new Book();
+                book.setkdBuku(rs.getInt("kdBuku"));
+                book.setJudul(rs.getString("judul"));
+                book.setPenerbit(rs.getString("penerbit"));
+                book.setTahun(rs.getInt("tahun"));
+                book.setStatus(rs.getString("status"));
+                ls.add(book);
+            } while (rs.next());
         }
+
         return ls;
     }
 
     @Override
-    public void update(String book_name, String book_code, String status)
+    public void update(int kdBuku, String book_name, String penerbit, int tahun, String status)
             throws SQLException
     {
 
         String query
-                = "update book_data set book_name=?, "+ " status= ? where book_code = ?";
+                = "update tbl_buku set judul=?, "+ " penerbit= ?, "+" tahun= ?, "+ " status= ? where kdBuku = ?";
         PreparedStatement ps
                 = con.prepareStatement(query);
         ps.setString(1, book_name);
-        ps.setString(2, status);
-        ps.setString(3, book_code);
-        ps.executeUpdate();
+        ps.setString(2, penerbit);
+        ps.setInt(3, tahun);
+        ps.setString(4, status);
+        ps.setInt(5, kdBuku);
+        int n = ps.executeUpdate();
+        if (n > 0) {
+            System.out.println("Data buku berhasil diupdate.");
+        }else{
+            System.out.println("Kode buku tidak ditemukan.");
+        }
     }
 
     @Override
-    public void rentBook(String book_code, String user_id)
+    public void rentBook(int kdBuku, int idUser, String tglPinjam)
             throws SQLException
     {
         String query
-                = "INSERT INTO `tbl_pinjam`(`book_code`, `user_id` ) VALUES (?,?)";
+                = "INSERT INTO `tbl_transaksi`(`kdBuku`, `idUser`, `tglPinjam` ) VALUES (?,?,?)";
         PreparedStatement ps
                 = con.prepareStatement(query);
-        ps.setString(1, book_code);
-        ps.setString(2, user_id);
+        ps.setInt(1, kdBuku);
+        ps.setInt(2, idUser);
+        ps.setString(3, tglPinjam);
         ps.executeUpdate();
 
         String query1
-                = "update book_data set status='rent' where book_code = ?";
+                = "update tbl_buku set status='rent' where kdBuku = ?";
         PreparedStatement ps1
                 = con.prepareStatement(query1);
-        ps1.setString(1, book_code);
+        ps1.setInt(1, kdBuku);
         ps1.executeUpdate();
+
+        int n = ps1.executeUpdate();
+        if (n > 0) {
+            System.out.println("Peminjaman sukses.");
+        }else{
+            System.out.println("Peminjaman gagal.");
+        }
     }
 
     @Override
-    public void returnBook(String book_code, String id_pinjam)
+    public void returnBook(int idUser, int kdBuku, String tglKembali)
             throws SQLException
     {
         String query
-                = "INSERT INTO `tbl_kembali`(`id_pinjam`) VALUES (?)";
+                = "UPDATE tbl_transaksi set tglKembali=? WHERE idUser=? AND kdBuku=?";
         PreparedStatement ps
                 = con.prepareStatement(query);
-        ps.setString(1, id_pinjam);
+        ps.setString(1, tglKembali);
+        ps.setInt(2, idUser);
+        ps.setInt(3, kdBuku);
         ps.executeUpdate();
 
         String query1
-                = "Update book_data set status='available' where book_code=? ";
+                = "Update tbl_buku set status='available' where kdBuku=? ";
         PreparedStatement ps1
                 = con.prepareStatement(query1);
-        ps1.setString(1, book_code);
-        ps1.executeUpdate();
+        ps1.setInt(1, kdBuku);
+        int n = ps1.executeUpdate();
+        if (n > 0) {
+            System.out.println("Pengembalian sukses.");
+        }else{
+            System.out.println("Pengembalian gagal.");
+        }
     }
+
+
 }

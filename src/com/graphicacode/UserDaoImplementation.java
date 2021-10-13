@@ -26,13 +26,17 @@ public class UserDaoImplementation
 	        throws SQLException
 	    {
 	        String query
-	            = "INSERT INTO `user_data`(`nama_peminjam`, `status`) VALUES (?,?)";
+	            = "INSERT INTO `tbl_user`(`nama`, `noTelp`, `email`) VALUES (?,?,?)";
 	        PreparedStatement ps
 	            = con.prepareStatement(query);
 	        ps.setString(1, user.getNama_peminjam());
-	        ps.setString(2, user.getStatus());
+	        ps.setString(2, user.getNoTelp());
+	        ps.setString(3, user.getEmail());
 	        int n = ps.executeUpdate();
-	        return n;
+			if (n > 0) {
+				System.out.println("Data peminjam berhasil ditambahkan.");
+			}
+			return n;
 	    }
 
 	    @Override
@@ -40,11 +44,16 @@ public class UserDaoImplementation
 	        throws SQLException
 	    {
 	        String query
-	            = "delete from user_data where id =?";
+	            = "delete from tbl_user where idUser =?";
 	        PreparedStatement ps
 	            = con.prepareStatement(query);
 	        ps.setInt(1, user_id);
-	        ps.executeUpdate();
+			int n = ps.executeUpdate();
+			if (n > 0) {
+				System.out.println("Data peminjam berhasil dihapus.");
+			}else{
+				System.out.println("ID peminjam tidak ditemukan.");
+			}
 	    }
 
 	    @Override
@@ -53,7 +62,7 @@ public class UserDaoImplementation
 	    {
 
 	        String query
-	            = "select * from user_data where id= ?";
+	            = "select * from tbl_user where idUser= ?";
 	        PreparedStatement ps
 	            = con.prepareStatement(query);
 
@@ -64,9 +73,10 @@ public class UserDaoImplementation
 
 	        while (rs.next()) {
 	            check = true;
-	            user.setUser_id(rs.getInt("id"));
-	            user.setNama_peminjam(rs.getString("nama_peminjam"));
-	            user.setStatus(rs.getString("status"));
+	            user.setUser_id(rs.getInt("idUser"));
+	            user.setNama_peminjam(rs.getString("nama"));
+	            user.setNoTelp(rs.getString("noTelp"));
+                user.setEmail(rs.getString("email"));
 	        }
 
 	        if (check == true) {
@@ -80,33 +90,44 @@ public class UserDaoImplementation
 	    public List<User> getUsers()
 	        throws SQLException
 	    {
-	        String query = "select * from user_data";
+	        String query = "select * from tbl_user";
 	        PreparedStatement ps
 	            = con.prepareStatement(query);
 	        ResultSet rs = ps.executeQuery();
 	        List<User> ls_user = new ArrayList();
+			if (rs.next() == false) {
+				System.out.println("Data Peminjam masih kosong.");
+			} else {
+				do {
+					User user = new User();
+					user.setUser_id(rs.getInt("idUser"));
+					user.setNama_peminjam(rs.getString("nama"));
+                    user.setNoTelp(rs.getString("noTelp"));
+                    user.setEmail(rs.getString("email"));
+					ls_user.add(user);
+				} while (rs.next());
+			}
 
-	        while (rs.next()) {
-	            User user = new User();
-	            user.setUser_id(rs.getInt("id"));
-	            user.setNama_peminjam(rs.getString("nama_peminjam"));
-	            user.setStatus(rs.getString("status"));
-	            ls_user.add(user);
-	        }
 	        return ls_user;
 	    }
 
 	    @Override
-	    public void update(String nama_peminjam, String status, int user_id)
+	    public void update(int user_id, String nama_peminjam, String notelp, String email)
 	            throws SQLException
 	    {
 	        String query
-	            = "update user_data set nama_peminjam=?, "+ " status= ? where id = ?";
+	            = "update tbl_user set nama=?, "+ " noTelp= ?, "+ " email= ? where idUser = ?";
 	        PreparedStatement ps
 	            = con.prepareStatement(query);
 	        ps.setString(1, nama_peminjam);
-	        ps.setString(2, status);
-	        ps.setInt(3, user_id);
-	        ps.executeUpdate();
+	        ps.setString(2, notelp);
+			ps.setString(3, email);
+	        ps.setInt(4, user_id);
+	        int n = ps.executeUpdate();
+			if (n > 0) {
+				System.out.println("Data peminjam berhasil diupdate.");
+			}else{
+				System.out.println("ID peminjam tidak ditemukan.");
+			}
 	    }
 }

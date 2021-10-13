@@ -1,50 +1,52 @@
 package com.graphicacode;
 
 public class Book {
-    int book_id;
-    String book_name;
-    String book_code;
-    String date_in;
+    int kdBuku;
+    String judul;
+    String penerbit;
+    int tahun;
     String status;
 
     public Book() {
     }
 
-    public Book(String book_name, String book_code) {
-        this.book_name = book_name;
-        this.book_code = book_code;
+    public Book(String judul, String penerbit, int tahun, String status) {
+        this.judul = judul;
+        this.penerbit = penerbit;
+        this.tahun = tahun;
+        this.status = status;
     }
 
-    public int getBook_id() {
-        return book_id;
+    public int getkdBuku() {
+        return kdBuku;
     }
 
-    public void setBook_id(int book_id) {
-        this.book_id = book_id;
+    public void setkdBuku(int kdBuku) {
+        this.kdBuku = kdBuku;
     }
 
-    public String getBook_name() {
-        return book_name;
+    public String getJudul() {
+        return judul;
     }
 
-    public void setBook_name(String book_name) {
-        this.book_name = book_name;
+    public void setJudul(String judul) {
+        this.judul = judul;
     }
 
-    public String getBook_code() {
-        return book_code;
+    public String getPenerbit() {
+        return penerbit;
     }
 
-    public void setBook_code(String book_code) {
-        this.book_code = book_code;
+    public void setPenerbit(String penerbit) {
+        this.penerbit = penerbit;
     }
 
-    public String getDate_in() {
-        return date_in;
+    public int getTahun() {
+        return tahun;
     }
 
-    public void setDate_in(String date_in) {
-        this.date_in = date_in;
+    public void setTahun(int tahun) {
+        this.tahun = tahun;
     }
 
     public String getStatus() {
@@ -57,6 +59,6 @@ public class Book {
 
     @Override
     public String toString() {
-        return "Book [book_id=" + book_id + ",book_name=" + book_name + ", book_code=" + book_code + ",status=" + status + "]";
+        return "Book [kdBuku=" + kdBuku + ", judul=" + judul + ", penerbit=" + penerbit +", tahun=" + tahun + ", status=" + status + "]";
     }
 }

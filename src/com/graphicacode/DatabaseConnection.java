@@ -9,7 +9,7 @@ public class DatabaseConnection {
 
     private String url = "jdbc:mysql://localhost/mylibrary";
     private String user = "root";
-    private String pass = "telkom";
+    private String pass = "";
     private Connection con;
     private static DatabaseConnection instance;
 

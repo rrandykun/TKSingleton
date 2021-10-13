@@ -6,17 +6,17 @@ import java.util.List;
 public interface BookDao {
     public int add(Book emp)
         throws SQLException;
-    public void delete(String book_code)
+    public void delete(int book_code)
         throws SQLException;
-    public Book getBook(String book_code)
+    public Book getBook(int book_code)
         throws SQLException;
     public List<Book> getBooks()
         throws SQLException;
-    public void update(String book_name, String book_code, String status)
+    public void update(int kdBuku, String book_name, String penerbit, int tahun, String status)
         throws SQLException;
 
-    public void rentBook(String book_code, String user_id)
+    public void rentBook(int kdBuku, int idUser, String tglPinjam)
             throws SQLException;
-    public void returnBook(String book_code, String user_name)
+    public void returnBook(int kdBuku, int idUser, String tglKembali)
             throws SQLException;
 }
